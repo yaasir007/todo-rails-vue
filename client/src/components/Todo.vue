@@ -1,4 +1,24 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+const todos = ref([]);
+const API_URL = 'http://127.0.0.1:3000/todos';
+
+const updateTodo = async () => {
+  return true;
+}
+
+const createTodo = async () => {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      title: title.value,
+      body: body.value,
+    })
+  })
+}
 </script>
 
 <template>
@@ -9,8 +29,8 @@
       <input type="text" v-model="body" class="body-input" placeholder="Description...">
       <div class="action-btns">
         <button>Create</button>
-        <button v-if="isEditing">Update</button>
-        <button>Cancel</button>
+        <button v-if="isEditing" @click="updateTodo">Update</button>
+        <button v-if="isEditing">Cancel</button>
       </div>
     </div>
   
