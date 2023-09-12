@@ -126,7 +126,7 @@ onUpdated(() => {
   display: grid;
   grid-template-columns: repeat(2, 600px);
   gap: 5rem;
-  margin-top: 3rem;
+  margin-block: 3rem;
 }
 
 .dy-container {
