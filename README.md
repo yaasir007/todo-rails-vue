@@ -1,24 +1,7 @@
-# README
+<h1>Todo App with Rails and Vue 3</h1>
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+<img scr="client/public/create.png">
 
-Things you may want to cover:
+<br>
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+<img scr="client/public/update.png">
