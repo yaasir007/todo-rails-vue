@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUpdated } from 'vue';
 const todos = ref([]);
 const API_URL = 'http://127.0.0.1:3000/todos';
 const title = ref();
@@ -43,8 +43,22 @@ const createTodo = async () => {
   todo_id.value = 0;
 }
 
+const deleteTodo = async (id) => {
+  await fetch(`${API_URL}/${id}`, {
+    method: 'DELETE',
+  })
+
+  todos.value = todos.value.filter((todo) => {
+    todo.id !== id;
+  })
+}
+
 
 onMounted(() => {
+  index();
+})
+
+onUpdated(() => {
   index();
 })
 </script>
@@ -56,7 +70,7 @@ onMounted(() => {
       <input type="text" v-model="title" class="title-input" placeholder="Title...">
       <input type="text" v-model="body" class="body-input" placeholder="Description...">
       <div class="action-btns">
-        <button @click="createTodo" :disabled="title">Create</button>
+        <button @click="createTodo" :disabled="!title">Create</button>
         <button v-if="isEditing" @click="updateTodo">Update</button>
         <button v-if="isEditing">Cancel</button>
       </div>
@@ -70,7 +84,7 @@ onMounted(() => {
           <p>{{ todo.body }}</p>
           <div class="item-btns">
             <button>Edit</button>
-            <button>Delete</button>
+            <button @click="deleteTodo(todo.id)">Delete</button>
           </div>
         </div>
       </div>
