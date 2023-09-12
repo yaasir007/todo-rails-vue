@@ -8,11 +8,6 @@ const status = ref(false);
 const todo_id = ref(0);
 const isEditing = ref(false);
 
-
-const updateTodo = async () => {
-  return true;
-}
-
 const index = async () => {
   const res = await fetch(API_URL, {
     method: 'GET',
@@ -53,6 +48,40 @@ const deleteTodo = async (id) => {
   })
 }
 
+const editTodo = (todo) => {
+  isEditing.value = true;
+  title.value = todo.title;
+  body.value = todo.body;
+
+  todo_id.value = todo.id;
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}
+
+const updateTodo = async () => {
+  await fetch(`${API_URL}/${todo_id.value}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id: todo_id.value,
+      title: title.value,
+      body: body.value,
+      status: status.value,
+    })
+  })
+}
+
+const cancelBtn = () => {
+  title.value = '';
+  body.value = '';
+  todo_id.value = 0;
+  isEditing.value = false;
+}
 
 onMounted(() => {
   index();
@@ -70,9 +99,9 @@ onUpdated(() => {
       <input type="text" v-model="title" class="title-input" placeholder="Title...">
       <input type="text" v-model="body" class="body-input" placeholder="Description...">
       <div class="action-btns">
-        <button @click="createTodo" :disabled="!title">Create</button>
+        <button v-if="!isEditing" @click="createTodo" :disabled="!title">Create</button>
         <button v-if="isEditing" @click="updateTodo">Update</button>
-        <button v-if="isEditing">Cancel</button>
+        <button v-if="isEditing" @click="cancelBtn">Cancel</button>
       </div>
     </div>
   
@@ -83,7 +112,7 @@ onUpdated(() => {
           <p>{{ todo.title }}</p>
           <p>{{ todo.body }}</p>
           <div class="item-btns">
-            <button>Edit</button>
+            <button @click="editTodo(todo)">Edit</button>
             <button @click="deleteTodo(todo.id)">Delete</button>
           </div>
         </div>
@@ -97,23 +126,31 @@ onUpdated(() => {
   display: grid;
   grid-template-columns: repeat(2, 600px);
   gap: 5rem;
+  margin-top: 3rem;
 }
 
 .dy-container {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   gap: 1rem;
 }
 
-.title-input,
-.body-input {
+.title-input{
   width: 80%;
   padding: 12px 20px;
   box-sizing: border-box;
   border: 1px solid purple;
   border-radius: 4px;
+}
+.body-input {
+  width: 80%;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  border: 1px solid purple;
+  border-radius: 4px;
+  height: 3rem;
 }
 .action-btns {
   display: flex;
@@ -121,12 +158,15 @@ onUpdated(() => {
   align-items: center;
   gap: 1rem;
 }
-
 .list-container {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
+}
+
+button {
+  border-color: purple;
 }
 
 .list-items {
@@ -142,6 +182,9 @@ onUpdated(() => {
   padding: 1.2rem 2rem;
   border-radius: 1rem;
   cursor: pointer;
+  width: 450px;
+  border-color: purple;
+  background-color: #3B3B3B;
 }
 .item-btns {
   display: flex;
